@@ -1,0 +1,9 @@
+server:
+  port: 8080
+datasource:
+  host: 127.0.0.1
+  port: 3306
+  database: go_learn
+  username: alphasu
+  password: 990211
+  charset: utf8

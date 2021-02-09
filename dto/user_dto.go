@@ -1,5 +1,7 @@
 package dto
 
+//data transfer object
+
 import "learn_go/learnGo/model"
 
 type UserDto struct {

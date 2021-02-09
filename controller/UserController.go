@@ -7,6 +7,7 @@ import (
 	"learn_go/learnGo/common"
 	"learn_go/learnGo/dto"
 	"learn_go/learnGo/model"
+	"learn_go/learnGo/response"
 	"learn_go/learnGo/util"
 	"log"
 	"net/http"
@@ -21,11 +22,11 @@ func Register(ctx *gin.Context) {
 
 	//数据验证
 	if len(telephone) != 11 {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "手机号必须为11位"})
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "手机号必须为11位")
 		return
 	}
 	if len(password) < 6 {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "密码不能少于6位"})
+
 		return
 	}
 	// 如果名称没有传，赋值一个随机字符串
@@ -34,14 +35,14 @@ func Register(ctx *gin.Context) {
 	}
 	// 判断手机号是否存在
 	if isTelephoneExist(db, telephone) {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "用户已经存在"})
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "用户已经存在")
 		return
 	}
 
 	//创建用户
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "密码加密错误"})
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "密码加密错误")
 		return
 	}
 	newUser := model.User{
@@ -50,8 +51,7 @@ func Register(ctx *gin.Context) {
 		Password:  string(hashedPassword),
 	}
 	db.Create(&newUser)
-
-	ctx.JSON(200, gin.H{"code": 200, "msg": "注册成功"})
+	response.Success(ctx, nil, "注册成功")
 }
 
 func Login(ctx *gin.Context) {
@@ -88,7 +88,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 	//返回结果
-	ctx.JSON(200, gin.H{"code": 200, "data": gin.H{"token": token}, "msg": "登录成功"})
+	response.Success(ctx, gin.H{"token": token}, "注册成功")
 }
 
 func Info(ctx *gin.Context) {
